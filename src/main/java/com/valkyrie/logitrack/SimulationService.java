@@ -25,6 +25,14 @@ public class SimulationService {
     @Value("${chaos.cpu.intensity:30}")
     private int cpuIntensity;
 
+    
+	/*
+	 * ExecutorService: A Java tool for managing and running tasks in the background.
+	  
+	 * Executors.newFixedThreadPool(4): Creates a pool of 4 threads that
+	 * can run tasks simultaneously.
+	 */
+
     private final ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     private final String[] normalMessages = {
@@ -70,11 +78,13 @@ public class SimulationService {
         log.info("NORMAL_TRAFFIC: {}", message);
     }
 
+    
+    // Simulates a slow API - Pretend an API is slow and record it like a real production system.
     private void executeHighLatency() {
         long startTime = System.currentTimeMillis();
         int sleepTime = 500 + random.nextInt(1500); // 500-2000ms
 
-        try {
+        try {	
             Thread.sleep(sleepTime);
             long duration = System.currentTimeMillis() - startTime;
             log.warn("HIGH_LATENCY: Slow API response detected - Duration: {}ms, Threshold exceeded", duration);
