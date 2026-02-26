@@ -33,7 +33,7 @@ RUN curl -L -o /app/pyroscope.jar \
 COPY --from=build /build/target/*.jar /app/logitrack.jar
 
 # Expose application port
-EXPOSE 8080
+EXPOSE 8084
 
 # Environment variables for OpenTelemetry
 ENV OTEL_SERVICE_NAME=logiTrack
