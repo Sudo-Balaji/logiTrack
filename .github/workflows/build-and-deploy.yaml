@@ -1,0 +1,46 @@
+name: Build and Push to Azure ACR
+
+# Manual trigger (just like at Albertsons!)
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: 'Tag for the Docker Image (e.g., v1.0.0)'
+        required: true
+        default: 'latest'
+
+env:
+  ACR_NAME: 'valkiacr01' # Change this if your ACR name is different
+  IMAGE_NAME: 'logitrack'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Clone the code into the Runner
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # 2. Login to Azure using the Robot Badge
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # 3. Login to the specific Azure Container Registry
+    - name: ACR Login
+      run: |
+        az acr login --name ${{ env.ACR_NAME }}
+
+    # 4. Build the image and push it to ACR in one command!
+    - name: Build and Push Docker Image
+      run: |
+        # Tag format: valkiacr01.azurecr.io/logitrack:v1.0.0
+        FULL_IMAGE_NAME="${{ env.ACR_NAME }}.azurecr.io/${{ env.IMAGE_NAME }}:${{ github.event.inputs.image_tag }}"
+        
+        echo "Building image: $FULL_IMAGE_NAME"
+        docker build -t $FULL_IMAGE_NAME .
+        
+        echo "Pushing image to ACR..."
+        docker push $FULL_IMAGE_NAME
