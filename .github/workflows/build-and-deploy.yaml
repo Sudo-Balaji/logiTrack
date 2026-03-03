@@ -10,7 +10,7 @@ on:
         default: 'latest'
 
 env:
-  ACR_NAME: 'valkiacr01' # Change this if your ACR name is different
+  ACR_NAME: 'valkiacr002' # Change this if your ACR name is different
   IMAGE_NAME: 'logitrack'
 
 jobs:
